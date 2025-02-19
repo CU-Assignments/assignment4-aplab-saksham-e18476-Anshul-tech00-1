@@ -1,0 +1,44 @@
+Problem 1:Beautiful Array
+ def beautifulArray(n):
+    result = []   
+    # Generate odd numbers first
+    odds = [i for i in range(1, n+1, 2)]
+    # Then generate even numbers
+    evens = [i for i in range(2, n+1, 2)]
+    
+    # Concatenate odd and even lists
+    return odds + evens
+Problem 2
+import heapq
+
+def getSkyline(buildings):
+    # Create a list of all events
+    events = []
+    for left, right, height in buildings:
+        events.append((left, height))  # A building starts
+        events.append((right, -height))  # A building ends (negative height for removal)
+    
+    # Sort events: first by x, and then by height (larger height first for start events)
+    events.sort(key=lambda x: (x[0], x[1]))
+    
+    result = []
+    max_heap = [0]  # A max-heap to store the heights, starting with height 0
+    prev_max = 0
+    
+    for x, h in events:
+        # If it's a start event, push the height to the max-heap
+        if h > 0:
+            heapq.heappush(max_heap, -h)
+        else:  # It's an end event, remove the height
+            max_heap.remove(h)
+            heapq.heapify(max_heap)
+        
+        # Current max height
+        curr_max = -max_heap[0]
+        
+        # If the height changes, add the key point to the result
+        if curr_max != prev_max:
+            result.append([x, curr_max])
+            prev_max = curr_max
+    
+    return result
